@@ -1,0 +1,19 @@
+.todo{
+	padding: 5px;
+	box-sizing: border-box;
+	font-size: 16px;
+	border-bottom: 1px solid white;
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+.todo__btn{
+ width: 30px;
+ height: 30px;
+ padding: 0;
+ float: right;
+ margin-left: 5px;
+}
+.todoTitle__input{
+	
+}
