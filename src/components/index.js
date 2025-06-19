@@ -1,3 +1,5 @@
 export * from './Loader/Loader'
 export * from './Todo/Todo'
 export * from './Controls/Controls'
+export * from './TodoDetailed/TodoDetailed'
+export * from './NotFound/NotFound'

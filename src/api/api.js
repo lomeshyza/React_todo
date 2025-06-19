@@ -4,14 +4,12 @@ const fetchServer = (method, { id, ...payload } = {}) => {
 		method,
 		headers: { "Content-Type": "application/json;charset=utf-8" },
 	}
-
-
 	if (method === 'GET') {
-		const {  isSorted } = payload
+		const { isSorted } = payload
 		const sortingParams = isSorted
 			? '_sort=title&_order=asc'
 			: '_sort=id&_order=desc'
-		url += `?${sortingParams}`
+			url += `?${sortingParams}`
 		//url+=`?${sortingParams}&title_like=${searchedPhrase}`
 	} else {
 		if (method !== 'POST') {
@@ -21,7 +19,6 @@ const fetchServer = (method, { id, ...payload } = {}) => {
 		options.body = JSON.stringify(payload)
 	}
 	}
-	console.log(url)
 		return fetch(url, options).then((rawResponse) => rawResponse.json())
 }
 export const createTodo = (newTodo) => fetchServer('POST',newTodo)

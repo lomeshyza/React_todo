@@ -1,0 +1,8 @@
+.container {
+	min-width: 500px;
+	box-sizing: border-box;
+	position: relative;
+}
+.icon {
+	font-size: 40px
+}

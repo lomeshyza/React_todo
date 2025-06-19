@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
+import {
+	Route,
+	Routes,
+	Navigate,
+	useNavigate,
+} from "react-router-dom";
+
 import styles from "./app.module.css";
-import { Loader, Todo } from "../../components";
+import { Loader, Todo, TodoDetailed, NotFound } from "../../components";
 import { Controls } from "../Controls/Controls";
 import { readTodos, createTodo, updateTodo, deleteTodo } from "../../api";
 import { addTodo, setTodo, findTodo, removeTodo } from "../../utils";
@@ -13,21 +20,22 @@ export default function App() {
 	const [isSorted, setIsSorted] = useState(false);
 	const [isCreating, setIsCreating] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
+	const navigate = useNavigate();
 
 	//SAVE
 	const onTodoSave = (todoId) => {
 		const { title } = findTodo(todos, todoId) || {};
 		if (todoId === NEW_TODO_ID) {
-			createTodo({ title })
+			createTodo({ title, completed: false })
 				.then((todo) => {
 					console.log("Todo добавлен, ответ сервера:", todo);
 					let updatedTodos = setTodo(todos, {
 						id: NEW_TODO_ID,
 						isEditing: false,
+						completed: false,
 					});
 					updatedTodos = removeTodo(updatedTodos, NEW_TODO_ID);
 					updatedTodos = addTodo(updatedTodos, todo);
-
 					setTodos(updatedTodos);
 				})
 				.finally(() => {
@@ -48,11 +56,20 @@ export default function App() {
 	};
 	//EDIT
 	const onTodoEdit = (id) => {
+		setIsCreating(true);
 		setTodos(setTodo(todos, { id, isEditing: true }));
 	};
 
-	const ontodoTitleChange = (id, newTitle) => {
+	const onTodoTitleChange = (id, newTitle) => {
 		setTodos(setTodo(todos, { id, title: newTitle }));
+		setIsCreating(false);
+	};
+
+	const onTodoCompletedChange = (id, newCompleted) => {
+		updateTodo({ id, completed: newCompleted }).then((response) => {
+			console.log("Todo обновлён, ответ сервера:", response);
+			setTodos(setTodo(todos, { id, completed: newCompleted }));
+		});
 	};
 	//DELETE
 	const onTodoRemove = (id) => {
@@ -75,39 +92,96 @@ export default function App() {
 	}, [isRefresh, isSorted]);
 
 	return (
-		<div className={styles.container}>
-			<h1 className={styles.h1}>Список дел</h1>
-			<Controls
-				onTodoAdd={onTodoAdd}
-				isCreating={isCreating}
-				setSearchedPhrase={setSearchedPhrase}
-				onSearch={() => setIsRefresh(!isRefresh)}
-				onSorting={setIsSorted}
+		<Routes>
+			<Route
+				path="/"
+				element={
+					<div className={styles.container}>
+						<h1 className={styles.h1}>Список дел</h1>
+						<Controls
+							onTodoAdd={onTodoAdd}
+							isCreating={isCreating}
+							setSearchedPhrase={setSearchedPhrase}
+							onSearch={() => setIsRefresh(!isRefresh)}
+							onSorting={setIsSorted}
+						/>
+						{isLoading ? (
+							<Loader />
+						) : (
+							<div className={styles.todos}>
+								{todos.length === 0 ? (
+									<p>Ничего не найдено</p>
+								) : (
+									<>
+										{todos.map(
+											({
+												id,
+												title,
+												completed,
+												isEditing = false,
+											}) => (
+												<Todo
+													id={id}
+													key={id}
+													title={title}
+													completed={completed}
+													onTitleChange={(newTitle) =>
+														onTodoTitleChange(
+															id,
+															newTitle
+														)
+													}
+													onCompletedChange={(
+														newCompleted
+													) => {
+														onTodoCompletedChange(
+															id,
+															newCompleted
+														);
+													}}
+													onSave={() =>
+														onTodoSave(id)
+													}
+													onRemove={() =>
+														onTodoRemove(id)
+													}
+													onEdit={() =>
+														onTodoEdit(id)
+													}
+													isEditing={isEditing}
+												/>
+											)
+										)}
+									</>
+								)}
+							</div>
+						)}
+					</div>
+				}
 			/>
-			{isLoading ? (
-				<Loader />
-			) : (
-				<div className={styles.todos}>
-					{todos.length === 0 ? (
-						<p>Ничего не найдено</p>
-					) : (
-						todos.map(({ id, title, isEditing = false }) => (
-							<Todo
-								id={id}
-								key={id}
-								title={title}
-								onTitleChange={(newTitle) =>
-									ontodoTitleChange(id, newTitle)
-								}
-								onSave={() => onTodoSave(id)}
-								onRemove={() => onTodoRemove(id)}
-								onEdit={() => onTodoEdit(id)}
-								isEditing={isEditing}
+			<Route
+				path="/todo/:id"
+				element={
+					<>
+						<div className={styles.container}>
+							<button onClick={() => navigate(-1)}>Назад</button>
+							<TodoDetailed
+								todos={todos}
+								onTitleChange={onTodoTitleChange}
+								onCompletedChange={onTodoCompletedChange}
+								onSave={onTodoSave}
+								onRemove={onTodoRemove}
+								onEdit={onTodoEdit}
 							/>
-						))
-					)}
-				</div>
-			)}
-		</div>
+						</div>
+					</>
+				}
+			/>
+			<Route
+				path="/404"
+				element={<NotFound>Страница не найдена</NotFound>}
+			/>
+			<Route path="*" element={<Navigate to="/404" />} />
+		</Routes>
 	);
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./search.module.css";
+
 export const Search = ({ onSearch, setSearchedPhrase }) => {
 	const [value, setValue] = useState("");
 	const onSubmit = (evt) => {

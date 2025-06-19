@@ -1,17 +1,44 @@
 .todo{
 	padding: 5px;
-	box-sizing: border-box;
+	width: 100%;
 	font-size: 16px;
 	border-bottom: 1px solid white;
 	margin-bottom: 10px;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
+}
+.todo__link {
+	width: 100%;
+	text-align: start;
+	text-decoration:none;
+	color:#fff
+}
+:global .active {
+	color:#fff;
+}
+a:hover {
+  color: #aeafb5;
+}
+.todo__title {
+	width: 100%;
+    height: 24px;
+	white-space: nowrap;
+    overflow: hidden;
+	text-overflow: ellipsis
+}
+.todo__input{
+	width: 100%;
 }
 .todo__btn{
- width: 30px;
- height: 30px;
- padding: 0;
- float: right;
- margin-left: 5px;
+ 	width: 40px;
+ 	height: 30px;
+ 	padding: 0;
+ 	float: right;
+ 	margin-left: 10px;
 }
-
+.checkbox {
+	height: 30px;
+    width: 30px;
+    margin-right: 10px;
+}
