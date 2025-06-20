@@ -3,7 +3,7 @@
     {
       "id": "145a",
       "title": "delo 1",
-      "completed": false
+      "completed": true
     },
     {
       "id": "d65e",
@@ -13,11 +13,6 @@
     {
       "id": "2586",
       "title": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum doloribus quidem debitis unde, molestias reprehenderit, voluptatum perferendis provident vel ipsum aliquam. Dolores ducimus eius esse deserunt, vero laudantium ipsa eos?",
-      "completed": false
-    },
-    {
-      "id": "a6c2",
-      "title": "delo 3",
       "completed": false
     }
   ]
